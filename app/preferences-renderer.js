@@ -274,7 +274,7 @@ window.onload = async (e) => {
   const translatedDefaultRehabIdeaGroups = await defaultRehabIdeaGroupsForPreferences()
   let rehabIdeaGroups = normalizeRehabIdeaGroupsForPreferences(settings.timeAwareRehabIdeaGroups, translatedDefaultRehabIdeaGroups)
   let rehabEditorMode = 'table'
-  let rehabUndoStack = []
+  const rehabUndoStack = []
   let rehabRedoStack = []
   let lastTextEditSnapshot = null
   renderRehabIdeaGroupsEditor()
@@ -659,8 +659,8 @@ window.onload = async (e) => {
         : defaultGroups[slot].miniBreakIdeas
       const longBreakIdeas = Array.isArray(sourceSlot.longBreakIdeas)
         ? sourceSlot.longBreakIdeas
-            .filter(item => item && typeof item.title === 'string' && typeof item.text === 'string' && item.title.trim() && item.text.trim())
-            .map(item => ({ title: item.title, text: item.text }))
+          .filter(item => item && typeof item.title === 'string' && typeof item.text === 'string' && item.title.trim() && item.text.trim())
+          .map(item => ({ title: item.title, text: item.text }))
         : defaultGroups[slot].longBreakIdeas
 
       return [slot, {

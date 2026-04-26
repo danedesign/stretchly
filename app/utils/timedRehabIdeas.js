@@ -52,8 +52,8 @@ function normalizeRehabIdeaGroups (groups, t) {
       : defaultGroups[slot].miniBreakIdeas
     const longBreakIdeas = Array.isArray(sourceSlot.longBreakIdeas)
       ? sourceSlot.longBreakIdeas
-          .filter(item => item && typeof item.title === 'string' && typeof item.text === 'string' && item.title.trim() && item.text.trim())
-          .map(item => ({ title: item.title, text: item.text }))
+        .filter(item => item && typeof item.title === 'string' && typeof item.text === 'string' && item.title.trim() && item.text.trim())
+        .map(item => ({ title: item.title, text: item.text }))
       : defaultGroups[slot].longBreakIdeas
 
     return [slot, {
