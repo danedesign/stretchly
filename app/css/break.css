@@ -125,3 +125,92 @@ body[dir=rtl] .breaks > :nth-child(2) > a img {
   position: absolute;
   right: 12px;
 }
+
+.windows-update {
+  display: none;
+}
+
+.fake-update-frame {
+  display: none;
+}
+
+.windows-update-mode {
+  background-color: #0078d7;
+}
+
+.windows-update-mode .breaks {
+  color: #ffffff;
+  font-family: 'Segoe UI', 'Noto Sans Light', sans-serif;
+  grid-template: 1fr / 1fr;
+}
+
+.windows-update-mode .breaks > * {
+  grid-column: 1;
+}
+
+.windows-update-mode .breaks > :nth-child(1) {
+  align-self: center;
+}
+
+.windows-update-mode .break-idea,
+.windows-update-mode .break-text,
+.windows-update-mode .microbreak-idea,
+.windows-update-mode progress,
+.windows-update-mode #progress-time,
+.windows-update-mode .breaks > :nth-child(2),
+.windows-update-mode .breaks > :last-child {
+  display: none;
+}
+
+.windows-update-mode .windows-update {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  font-weight: 400;
+  min-width: 320px;
+}
+
+.windows-update-mode.external-fake-update-mode .windows-update {
+  display: none;
+}
+
+.windows-update-mode.external-fake-update-mode .breaks {
+  display: block;
+}
+
+.windows-update-mode.external-fake-update-mode .breaks > :nth-child(1) {
+  height: 100vh;
+}
+
+.windows-update-mode.external-fake-update-mode .fake-update-frame {
+  border: 0;
+  display: block;
+  height: 100vh;
+  width: 100vw;
+}
+
+.windows-update-spinner {
+  animation: windows-update-spin 1.2s linear infinite;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  height: 52px;
+  margin-bottom: 34px;
+  width: 52px;
+}
+
+.windows-update-title {
+  font-size: 23px;
+  line-height: 32px;
+}
+
+.windows-update-subtitle {
+  font-size: 23px;
+  line-height: 32px;
+}
+
+@keyframes windows-update-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

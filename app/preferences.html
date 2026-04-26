@@ -66,6 +66,52 @@
       <label data-i18next="preferences.settings.showIdeas" for="showIdeas"></label>
     </div>
     <div>
+      <input type="checkbox" value="timeAwareRehabTips" id="timeAwareRehabTips">
+      <label data-i18next="preferences.settings.timeAwareRehabTips" for="timeAwareRehabTips"></label>
+    </div>
+    <div class="rehab-ideas-editor">
+      <label data-i18next="preferences.settings.rehabIdeaGroups" for="rehabIdeaGroups"></label>
+      <div class="rehab-ideas-tabs">
+        <button type="button" class="active" id="rehabTableView" data-i18next="preferences.settings.rehabTableView"></button>
+        <button type="button" id="rehabJsonView" data-i18next="preferences.settings.rehabJsonView"></button>
+      </div>
+      <div id="rehabIdeaGroupsTable"></div>
+      <textarea id="rehabIdeaGroups" spellcheck="false"></textarea>
+      <div>
+        <button type="button" id="undoRehabIdeaGroups" data-i18next="preferences.settings.undoRehabIdeaGroups"></button>
+        <button type="button" id="redoRehabIdeaGroups" data-i18next="preferences.settings.redoRehabIdeaGroups"></button>
+        <button type="button" id="saveRehabIdeaGroups" data-i18next="preferences.settings.saveRehabIdeaGroups"></button>
+        <button type="button" id="resetRehabIdeaGroups" data-i18next="preferences.settings.resetRehabIdeaGroups"></button>
+        <span id="rehabIdeaGroupsStatus"></span>
+      </div>
+    </div>
+    <div>
+      <span data-i18next="preferences.settings.breakScreenMode"></span>
+    </div>
+    <div class="break-screen-mode">
+      <input type="radio" value="classic" name="breakScreenMode" id="breakScreenClassic">
+      <label data-i18next="preferences.settings.breakScreenClassic" for="breakScreenClassic"></label>
+      <input type="radio" value="windowsUpdate" name="breakScreenMode" id="breakScreenWindowsUpdate">
+      <label data-i18next="preferences.settings.breakScreenWindowsUpdate" for="breakScreenWindowsUpdate"></label>
+    </div>
+    <div id="fakeUpdateThemeRow">
+      <label data-i18next="preferences.settings.fakeUpdateTheme" for="fakeUpdateTheme"></label>
+      <div class="has-select">
+        <select name="fakeUpdateTheme" id="fakeUpdateTheme">
+          <option value="local" data-i18next="preferences.settings.fakeUpdateThemeLocal"></option>
+          <option value="fakeupdate-win11">FakeUpdate.net Windows 11</option>
+          <option value="fakeupdate-win10">FakeUpdate.net Windows 10</option>
+          <option value="fakeupdate-win10ue">FakeUpdate.net Windows 10 Update</option>
+          <option value="fakeupdate-win8">FakeUpdate.net Windows 8</option>
+          <option value="fakeupdate-win7">FakeUpdate.net Windows 7</option>
+          <option value="fakeupdate-vista">FakeUpdate.net Windows Vista</option>
+          <option value="fakeupdate-xp">FakeUpdate.net Windows XP</option>
+          <option value="fakeupdate-windows98">FakeUpdate.net Windows 98</option>
+          <option value="fakeupdate-apple">FakeUpdate.net Apple</option>
+        </select>
+      </div>
+    </div>
+    <div>
       <input type="checkbox" value="allScreens" id="allScreens">
       <label data-i18next="preferences.settings.allScreens" for="allScreens"></label>
     </div>

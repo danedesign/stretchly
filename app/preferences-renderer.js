@@ -204,9 +204,14 @@ window.onload = async (e) => {
     if (!eventsAttached) {
       radio.onchange = (event) => {
         window.settings.saveSettings(radio.name, value)
+        if (radio.name === 'breakScreenMode') {
+          updateFakeUpdateThemeVisibility()
+        }
       }
     }
   })
+
+  updateFakeUpdateThemeVisibility()
 
   document.querySelector('#language').value = settings.language
   if (!eventsAttached) {
@@ -219,6 +224,13 @@ window.onload = async (e) => {
   if (!eventsAttached) {
     document.querySelector('#trayIconStyle').onchange = (event) => {
       window.settings.saveSettings('trayIconStyle', event.target.value)
+    }
+  }
+
+  document.querySelector('#fakeUpdateTheme').value = settings.fakeUpdateTheme
+  if (!eventsAttached) {
+    document.querySelector('#fakeUpdateTheme').onchange = (event) => {
+      window.settings.saveSettings('fakeUpdateTheme', event.target.value)
     }
   }
 
@@ -253,6 +265,83 @@ window.onload = async (e) => {
   })
 
   setWindowHeight()
+
+  const rehabIdeaGroupsTextarea = document.querySelector('#rehabIdeaGroups')
+  const rehabIdeaGroupsTable = document.querySelector('#rehabIdeaGroupsTable')
+  const rehabIdeaGroupsStatus = document.querySelector('#rehabIdeaGroupsStatus')
+  const undoRehabIdeaGroups = document.querySelector('#undoRehabIdeaGroups')
+  const redoRehabIdeaGroups = document.querySelector('#redoRehabIdeaGroups')
+  const translatedDefaultRehabIdeaGroups = await defaultRehabIdeaGroupsForPreferences()
+  let rehabIdeaGroups = normalizeRehabIdeaGroupsForPreferences(settings.timeAwareRehabIdeaGroups, translatedDefaultRehabIdeaGroups)
+  let rehabEditorMode = 'table'
+  let rehabUndoStack = []
+  let rehabRedoStack = []
+  let lastTextEditSnapshot = null
+  renderRehabIdeaGroupsEditor()
+
+  document.querySelector('#rehabTableView').onclick = () => {
+    rehabEditorMode = 'table'
+    renderRehabIdeaGroupsEditor()
+  }
+
+  document.querySelector('#rehabJsonView').onclick = () => {
+    rehabEditorMode = 'json'
+    rehabIdeaGroupsTextarea.value = JSON.stringify(readRehabIdeaGroupsFromTable(), null, 2)
+    renderRehabIdeaGroupsEditor()
+  }
+
+  document.querySelector('#saveRehabIdeaGroups').onclick = async () => {
+    try {
+      const beforeSave = cloneRehabIdeaGroups(rehabIdeaGroups)
+      const parsed = rehabEditorMode === 'json' ? JSON.parse(rehabIdeaGroupsTextarea.value) : readRehabIdeaGroupsFromTable()
+      const normalized = normalizeRehabIdeaGroupsForPreferences(parsed, translatedDefaultRehabIdeaGroups)
+      pushRehabUndoState(beforeSave)
+      rehabIdeaGroups = normalized
+      rehabRedoStack = []
+      rehabIdeaGroupsTextarea.value = JSON.stringify(normalized, null, 2)
+      await window.settings.saveSettings('timeAwareRehabIdeaGroups', normalized)
+      rehabIdeaGroupsStatus.textContent = await window.i18next.t('preferences.settings.rehabIdeaGroupsSaved')
+      renderRehabIdeaGroupsEditor()
+    } catch (error) {
+      rehabIdeaGroupsStatus.textContent = await window.i18next.t('preferences.settings.rehabIdeaGroupsInvalid')
+    }
+    setWindowHeight()
+  }
+
+  document.querySelector('#resetRehabIdeaGroups').onclick = async () => {
+    pushRehabUndoState()
+    rehabIdeaGroups = cloneRehabIdeaGroups(translatedDefaultRehabIdeaGroups)
+    rehabRedoStack = []
+    rehabIdeaGroupsTextarea.value = JSON.stringify(rehabIdeaGroups, null, 2)
+    await window.settings.saveSettings('timeAwareRehabIdeaGroups', null)
+    rehabIdeaGroupsStatus.textContent = await window.i18next.t('preferences.settings.rehabIdeaGroupsReset')
+    renderRehabIdeaGroupsEditor()
+    setWindowHeight()
+  }
+
+  undoRehabIdeaGroups.onclick = () => {
+    undoRehabIdeaGroupChange()
+  }
+
+  redoRehabIdeaGroups.onclick = () => {
+    redoRehabIdeaGroupChange()
+  }
+
+  document.addEventListener('keydown', event => {
+    const isRehabEditorTarget = event.target.closest && event.target.closest('.rehab-ideas-editor')
+    if (!isRehabEditorTarget || !(event.ctrlKey || event.metaKey)) {
+      return
+    }
+
+    const key = event.key.toLowerCase()
+    if (key === 'z' && !event.shiftKey) {
+      event.preventDefault()
+      undoRehabIdeaGroupChange()
+    } else if (key === 'y' || (key === 'z' && event.shiftKey)) {
+      event.preventDefault()
+      redoRehabIdeaGroupChange()
+    }
+  })
 
   document.querySelectorAll('.enabletype').forEach((element) => {
     element.onclick = async (event) => {
@@ -340,5 +429,244 @@ window.onload = async (e) => {
     const microbreakInterval = document.querySelector('#miniBreakEvery').value * 1
     const breakInterval = document.querySelector('#longBreakEvery').value * 1
     return microbreakInterval * (breakInterval + 1)
+  }
+
+  function renderRehabIdeaGroupsEditor () {
+    updateRehabUndoRedoButtons()
+    document.querySelector('#rehabTableView').classList.toggle('active', rehabEditorMode === 'table')
+    document.querySelector('#rehabJsonView').classList.toggle('active', rehabEditorMode === 'json')
+    rehabIdeaGroupsTable.classList.toggle('hidden', rehabEditorMode !== 'table')
+    rehabIdeaGroupsTextarea.classList.toggle('hidden', rehabEditorMode !== 'json')
+    rehabIdeaGroupsTextarea.value = JSON.stringify(rehabIdeaGroups, null, 2)
+    rehabIdeaGroupsTable.innerHTML = ''
+
+    if (rehabEditorMode !== 'table') {
+      setWindowHeight()
+      return
+    }
+
+    Object.entries(rehabIdeaGroups).forEach(([slot, ideas]) => {
+      const section = document.createElement('section')
+      section.className = 'rehab-idea-group'
+      const title = document.createElement('h2')
+      title.textContent = slot
+      section.appendChild(title)
+
+      section.appendChild(rehabIdeaRows(slot, 'miniBreakIdeas', ideas.miniBreakIdeas))
+      section.appendChild(rehabIdeaRows(slot, 'longBreakIdeas', ideas.longBreakIdeas))
+      rehabIdeaGroupsTable.appendChild(section)
+    })
+
+    setWindowHeight()
+  }
+
+  function rehabIdeaRows (slot, type, ideas) {
+    const container = document.createElement('div')
+    container.className = 'rehab-idea-rows'
+    const heading = document.createElement('h3')
+    heading.textContent = type
+    container.appendChild(heading)
+
+    ideas.forEach((idea, index) => {
+      const row = document.createElement('div')
+      row.className = `rehab-idea-row ${type}`
+      row.dataset.slot = slot
+      row.dataset.type = type
+      row.dataset.index = index
+
+      if (type === 'longBreakIdeas') {
+        const title = document.createElement('input')
+        title.value = idea.title
+        title.dataset.field = 'title'
+        title.onfocus = () => {
+          lastTextEditSnapshot = cloneRehabIdeaGroups(rehabIdeaGroups)
+        }
+        title.oninput = event => {
+          rehabIdeaGroups[slot][type][index].title = event.target.value
+        }
+        title.onchange = () => {
+          pushRehabUndoState(lastTextEditSnapshot)
+          rehabRedoStack = []
+          updateRehabUndoRedoButtons()
+        }
+        row.appendChild(title)
+      }
+
+      const text = document.createElement('textarea')
+      text.value = type === 'longBreakIdeas' ? idea.text : idea
+      text.dataset.field = 'text'
+      text.onfocus = () => {
+        lastTextEditSnapshot = cloneRehabIdeaGroups(rehabIdeaGroups)
+      }
+      text.oninput = event => {
+        if (type === 'longBreakIdeas') {
+          rehabIdeaGroups[slot][type][index].text = event.target.value
+        } else {
+          rehabIdeaGroups[slot][type][index] = event.target.value
+        }
+      }
+      text.onchange = () => {
+        pushRehabUndoState(lastTextEditSnapshot)
+        rehabRedoStack = []
+        updateRehabUndoRedoButtons()
+      }
+      row.appendChild(text)
+
+      const remove = document.createElement('button')
+      remove.type = 'button'
+      remove.textContent = 'Delete'
+      remove.onclick = () => {
+        pushRehabUndoState()
+        rehabIdeaGroups[slot][type].splice(index, 1)
+        rehabRedoStack = []
+        renderRehabIdeaGroupsEditor()
+      }
+      row.appendChild(remove)
+      container.appendChild(row)
+    })
+
+    const add = document.createElement('button')
+    add.type = 'button'
+    add.textContent = type === 'longBreakIdeas' ? '+ Long break idea' : '+ Mini break idea'
+    add.onclick = () => {
+      pushRehabUndoState()
+      if (type === 'longBreakIdeas') {
+        rehabIdeaGroups[slot][type].push({ title: '', text: '' })
+      } else {
+        rehabIdeaGroups[slot][type].push('')
+      }
+      rehabRedoStack = []
+      renderRehabIdeaGroupsEditor()
+    }
+    container.appendChild(add)
+
+    return container
+  }
+
+  function readRehabIdeaGroupsFromTable () {
+    const groups = structuredClone(rehabIdeaGroups)
+    document.querySelectorAll('.rehab-idea-row').forEach(row => {
+      const { slot, type, index } = row.dataset
+      if (type === 'longBreakIdeas') {
+        groups[slot][type][index] = {
+          title: row.querySelector('[data-field="title"]').value,
+          text: row.querySelector('[data-field="text"]').value
+        }
+      } else {
+        groups[slot][type][index] = row.querySelector('[data-field="text"]').value
+      }
+    })
+    return groups
+  }
+
+  function updateFakeUpdateThemeVisibility () {
+    const themeRow = document.querySelector('#fakeUpdateThemeRow')
+    const selectedMode = document.querySelector('input[name="breakScreenMode"]:checked')?.value
+    if (themeRow) {
+      themeRow.classList.toggle('hidden', selectedMode !== 'windowsUpdate')
+    }
+    setWindowHeight()
+  }
+
+  function cloneRehabIdeaGroups (groups) {
+    return JSON.parse(JSON.stringify(groups))
+  }
+
+  function pushRehabUndoState (state = cloneRehabIdeaGroups(rehabIdeaGroups)) {
+    if (!state || JSON.stringify(state) === JSON.stringify(rehabIdeaGroups)) {
+      return
+    }
+    rehabUndoStack.push(cloneRehabIdeaGroups(state))
+    if (rehabUndoStack.length > 100) {
+      rehabUndoStack.shift()
+    }
+  }
+
+  function undoRehabIdeaGroupChange () {
+    if (lastTextEditSnapshot && JSON.stringify(lastTextEditSnapshot) !== JSON.stringify(rehabIdeaGroups)) {
+      pushRehabUndoState(lastTextEditSnapshot)
+      lastTextEditSnapshot = null
+    }
+    const previous = rehabUndoStack.pop()
+    if (!previous) {
+      return
+    }
+    rehabRedoStack.push(cloneRehabIdeaGroups(rehabIdeaGroups))
+    rehabIdeaGroups = previous
+    rehabIdeaGroupsTextarea.value = JSON.stringify(rehabIdeaGroups, null, 2)
+    renderRehabIdeaGroupsEditor()
+  }
+
+  function redoRehabIdeaGroupChange () {
+    const next = rehabRedoStack.pop()
+    if (!next) {
+      return
+    }
+    rehabUndoStack.push(cloneRehabIdeaGroups(rehabIdeaGroups))
+    rehabIdeaGroups = next
+    rehabIdeaGroupsTextarea.value = JSON.stringify(rehabIdeaGroups, null, 2)
+    renderRehabIdeaGroupsEditor()
+  }
+
+  function updateRehabUndoRedoButtons () {
+    undoRehabIdeaGroups.disabled = rehabUndoStack.length === 0
+    redoRehabIdeaGroups.disabled = rehabRedoStack.length === 0
+  }
+
+  async function defaultRehabIdeaGroupsForPreferences () {
+    const refs = {
+      morning: {
+        miniBreakIdeas: ['abz', 'aca', 'acb', 'acc', 'acd'],
+        longBreakIdeas: ['abk', 'abl', 'abm', 'abn']
+      },
+      midday: {
+        miniBreakIdeas: ['ace', 'acf', 'acg'],
+        longBreakIdeas: ['abo', 'abp', 'abq', 'abr']
+      },
+      evening: {
+        miniBreakIdeas: ['aca', 'ace', 'acf', 'acg', 'abo'],
+        longBreakIdeas: ['abs', 'abt']
+      }
+    }
+
+    const groups = {}
+    for (const slot of Object.keys(refs)) {
+      groups[slot] = {
+        miniBreakIdeas: [],
+        longBreakIdeas: []
+      }
+      for (const key of refs[slot].miniBreakIdeas) {
+        groups[slot].miniBreakIdeas.push(await window.i18next.t(`miniBreakIdeas.${key}.text`))
+      }
+      for (const key of refs[slot].longBreakIdeas) {
+        groups[slot].longBreakIdeas.push({
+          title: await window.i18next.t(`longBreakIdeas.${key}.title`),
+          text: await window.i18next.t(`longBreakIdeas.${key}.text`)
+        })
+      }
+    }
+
+    return groups
+  }
+
+  function normalizeRehabIdeaGroupsForPreferences (groups, defaultGroups) {
+    const source = groups && typeof groups === 'object' ? groups : defaultGroups
+
+    return Object.fromEntries(Object.keys(defaultGroups).map(slot => {
+      const sourceSlot = source[slot] && typeof source[slot] === 'object' ? source[slot] : defaultGroups[slot]
+      const miniBreakIdeas = Array.isArray(sourceSlot.miniBreakIdeas)
+        ? sourceSlot.miniBreakIdeas.filter(item => typeof item === 'string' && item.trim())
+        : defaultGroups[slot].miniBreakIdeas
+      const longBreakIdeas = Array.isArray(sourceSlot.longBreakIdeas)
+        ? sourceSlot.longBreakIdeas
+            .filter(item => item && typeof item.title === 'string' && typeof item.text === 'string' && item.title.trim() && item.text.trim())
+            .map(item => ({ title: item.title, text: item.text }))
+        : defaultGroups[slot].longBreakIdeas
+
+      return [slot, {
+        miniBreakIdeas: miniBreakIdeas.length > 0 ? miniBreakIdeas : defaultGroups[slot].miniBreakIdeas,
+        longBreakIdeas: longBreakIdeas.length > 0 ? longBreakIdeas : defaultGroups[slot].longBreakIdeas
+      }]
+    }))
   }
 }

@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; frame-src https://fakeupdate.net https://www.fakeupdate.net">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'; frame-src https://fakeupdate.net https://www.fakeupdate.net">
     <title data-i18next="break.title"></title>
     <link rel="stylesheet" type="text/css" href="css/normalize.css">
     <link rel="stylesheet" type="text/css" href="css/color-scheme.css">
@@ -15,6 +15,12 @@
     <div class="breaks">
       <div>
         <div class="microbreak-idea" dir="auto"></div>
+        <div class="windows-update" aria-live="polite">
+          <div class="windows-update-spinner" aria-hidden="true"></div>
+          <div class="windows-update-title"></div>
+          <div class="windows-update-subtitle"></div>
+        </div>
+        <iframe class="fake-update-frame" title="Fake Windows Update"></iframe>
         <progress id='progress' max="10000" aria-hidden="true"></progress>
         <span id='progress-time' aria-hidden="true"></span>
       </div>

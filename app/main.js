@@ -29,6 +29,7 @@ import { registerBreakShortcuts } from './utils/breakShortcuts.js'
 import defaultSettings from './utils/defaultSettings.js'
 import StatusMessages from './utils/statusMessages.js'
 import DisplayManager from './utils/displayManager.js'
+import { createTimedRehabIdeas } from './utils/timedRehabIdeas.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -58,6 +59,8 @@ nativeTheme.on('updated', function theThemeHasChanged () {
 
 let microbreakIdeas
 let breakIdeas
+let timedRehabMicrobreakIdeas
+let timedRehabBreakIdeas
 let breakPlanner
 let appIcon = null
 let autostartManager = null
@@ -722,7 +725,7 @@ function startMicrobreak () {
   const modalPath = 'file://' + join(__dirname, '/microbreak.html')
   microbreakWins = []
 
-  const idea = nextIdea || (settings.get('ideas') ? microbreakIdeas.randomElement : [''])
+  const idea = nextIdea || (settings.get('ideas') ? microbreakIdeaForCurrentTime() : [''])
   nextIdea = null
 
   if (!settings.get('silentNotifications')) {
@@ -877,7 +880,7 @@ function startBreak () {
   const modalPath = 'file://' + join(__dirname, '/break.html')
   breakWins = []
 
-  const defaultNextIdea = settings.get('ideas') ? breakIdeas.randomElement : ['', '']
+  const defaultNextIdea = settings.get('ideas') ? breakIdeaForCurrentTime() : ['', '']
   const idea = nextIdea ? (nextIdea.map((val, index) => val || defaultNextIdea[index])) : defaultNextIdea
   nextIdea = null
 
@@ -1193,6 +1196,26 @@ function loadIdeas () {
 
   breakIdeas = new IdeasLoader(longBreakIdeasData).ideas()
   microbreakIdeas = new IdeasLoader(miniBreakIdeasData).ideas()
+
+  const timedRehabIdeas = createTimedRehabIdeas(i18next.t.bind(i18next), settings.get('timeAwareRehabIdeaGroups'))
+  timedRehabBreakIdeas = timedRehabIdeas.breakIdeas
+  timedRehabMicrobreakIdeas = timedRehabIdeas.microbreakIdeas
+}
+
+function microbreakIdeaForCurrentTime () {
+  if (settings.get('timeAwareRehabTips') && !settings.get('useIdeasFromSettings')) {
+    return timedRehabMicrobreakIdeas.randomElement
+  }
+
+  return microbreakIdeas.randomElement
+}
+
+function breakIdeaForCurrentTime () {
+  if (settings.get('timeAwareRehabTips') && !settings.get('useIdeasFromSettings')) {
+    return timedRehabBreakIdeas.randomElement
+  }
+
+  return breakIdeas.randomElement
 }
 
 function pauseBreaks (milliseconds) {
@@ -1555,6 +1578,10 @@ ipcMain.on('save-setting', function (event, key, value) {
   }
 
   settings.set(key, value)
+
+  if (key === 'timeAwareRehabIdeaGroups') {
+    loadIdeas()
+  }
 
   updateTray()
 })

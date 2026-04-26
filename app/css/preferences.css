@@ -83,6 +83,77 @@ body > div > :last-child {
   margin-right: 32px;
 }
 
+.settings .break-screen-mode {
+  padding-left: 80px;
+}
+
+.settings .break-screen-mode > label {
+  margin-right: 32px;
+}
+
+.settings .rehab-ideas-editor {
+  display: grid;
+  grid-gap: 8px;
+}
+
+.settings .rehab-ideas-editor > textarea {
+  box-sizing: border-box;
+  font-family: Consolas, monospace;
+  font-size: 12px;
+  height: 220px;
+  line-height: 16px;
+  resize: vertical;
+  width: 100%;
+}
+
+.settings .rehab-ideas-editor button {
+  margin-right: 8px;
+}
+
+#rehabIdeaGroupsStatus {
+  color: var(--main-color);
+}
+
+.rehab-ideas-tabs button.active {
+  font-family: 'Noto Sans Regular', sans-serif;
+}
+
+.rehab-idea-group {
+  border: 1px solid rgba(0,0,0,0.12);
+  margin: 8px 0;
+  padding: 8px;
+}
+
+.rehab-idea-group h2,
+.rehab-idea-group h3 {
+  font-size: 13px;
+  margin: 4px 0 8px;
+}
+
+.rehab-idea-row {
+  display: grid;
+  grid-gap: 6px;
+  grid-template-columns: 1fr 70px;
+  margin-bottom: 6px;
+}
+
+.rehab-idea-row.longBreakIdeas {
+  grid-template-columns: 140px 1fr 70px;
+}
+
+.rehab-idea-row input,
+.rehab-idea-row textarea {
+  box-sizing: border-box;
+  font-size: 12px;
+  min-width: 0;
+  width: 100%;
+}
+
+.rehab-idea-row textarea {
+  height: 52px;
+  resize: vertical;
+}
+
 .schedule {
   display: grid;
   font-size: 13px;

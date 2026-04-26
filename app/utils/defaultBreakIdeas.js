@@ -142,5 +142,45 @@ export default [
   {
     data: ['Overwhelmed?', 'Try the 5-4-3-2-1 Grounding Technique: Identify 5 things you can see, 4 things you can touch, 3 things you can hear, 2 things you can smell, and 1 thing you can taste.'],
     enabled: true
+  },
+  {
+    data: ['Neck wake-up', 'Do a simplified McKenzie neck extension: gently lift your chin and look upward for a few minutes. Move slowly and avoid large rotations.'],
+    enabled: true
+  },
+  {
+    data: ['Wall posture', 'Stand with the back of your head, shoulder blades, and hips against a wall. Lightly press the back of your head backward and repeat 30 times.'],
+    enabled: true
+  },
+  {
+    data: ['Behind-ear release', 'Use your fingertips to lightly rub around the mastoid area behind your ears for a few minutes. Use skin-level pressure and avoid pressing on bony points.'],
+    enabled: true
+  },
+  {
+    data: ['Gentle neck stretch', 'Use one hand to gently guide your head to the opposite side. Hold each side for 20 seconds and repeat twice. Do not chase a strong stretch.'],
+    enabled: true
+  },
+  {
+    data: ['Core stability', 'If your body feels ready, do 3 sets of a 1-minute plank with 1 minute of rest between sets, then 10 push-ups or knee push-ups. Stop if symptoms increase.'],
+    enabled: true
+  },
+  {
+    data: ['Simple Baduanjin', 'Slowly do only "Two Hands Hold up the Heavens" and "Drawing the Bow" from Baduanjin. Keep the movement calm and low effort.'],
+    enabled: true
+  },
+  {
+    data: ['Posterior-chain stretch', 'Stand with knees slightly bent and gently reach your hands toward the floor. Do not force your hands to touch the floor. Repeat 30 times.'],
+    enabled: true
+  },
+  {
+    data: ['Ankle nerve glide', 'Sit down and slowly circle each ankle 10 times clockwise and 10 times counter-clockwise, then curl your toes into the floor 10 times.'],
+    enabled: true
+  },
+  {
+    data: ['Safety signal', 'If back burning or ankle numbness gets worse during training, stop immediately, lie down to rest, and skip training for the rest of the day.'],
+    enabled: true
+  },
+  {
+    data: ['Progress slowly', 'Follow the current routine for one week first. If symptoms do not increase, progress gradually; do not rush the plank or push-up volume.'],
+    enabled: true
   }
 ]

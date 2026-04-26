@@ -2,6 +2,18 @@ import HtmlTranslate from './utils/htmlTranslate.js'
 import applyBreakHealthEffect from './utils/breakHealthEffect.js'
 import './platform.js'
 
+const fakeUpdateUrls = {
+  'fakeupdate-win11': 'https://fakeupdate.net/win11/',
+  'fakeupdate-win10': 'https://fakeupdate.net/win10/',
+  'fakeupdate-win10ue': 'https://fakeupdate.net/win10ue/',
+  'fakeupdate-win8': 'https://fakeupdate.net/win8/',
+  'fakeupdate-win7': 'https://fakeupdate.net/win7/',
+  'fakeupdate-vista': 'https://fakeupdate.net/vista/',
+  'fakeupdate-xp': 'https://fakeupdate.net/xp/',
+  'fakeupdate-windows98': 'https://fakeupdate.net/windows98k/',
+  'fakeupdate-apple': 'https://fakeupdate.net/apple/'
+}
+
 window.onload = async (event) => {
   const [idea, started, duration, strictMode, postpone,
     postponePercent, backgroundColor, danger, breakHealthMode] = await window.breaks.sendBreakData()
@@ -48,8 +60,24 @@ window.onload = async (event) => {
   const postponeElement = document.querySelector('#postpone')
   const closeElement = document.querySelector('#close')
   const manualFinishElement = document.querySelector('#finish')
+  const breakScreenMode = await window.settings.get('breakScreenMode')
+  const fakeUpdateTheme = await window.settings.get('fakeUpdateTheme')
+  const windowsUpdateTitle = document.querySelector('.windows-update-title')
+  const windowsUpdateSubtitle = document.querySelector('.windows-update-subtitle')
+  const fakeUpdateFrame = document.querySelector('.fake-update-frame')
   document.body.classList.add(mainColor.substring(1))
   document.body.style.backgroundColor = backgroundColor
+  if (breakScreenMode === 'windowsUpdate') {
+    document.body.classList.add('windows-update-mode')
+    document.body.style.backgroundColor = '#0078d7'
+    if (fakeUpdateUrls[fakeUpdateTheme]) {
+      document.body.classList.add('external-fake-update-mode')
+      fakeUpdateFrame.src = fakeUpdateUrls[fakeUpdateTheme]
+    } else {
+      windowsUpdateTitle.innerHTML = await window.i18next.t('break.windowsUpdateTitle', { percent: 0 })
+      windowsUpdateSubtitle.innerHTML = await window.i18next.t('break.windowsUpdateSubtitle')
+    }
+  }
 
   document.querySelectorAll('.tiptext').forEach(async tt => {
     const keyboardShortcut = await window.settings.get('endBreakShortcut')
@@ -85,6 +113,10 @@ window.onload = async (event) => {
         }
         progress.value = (100 - passedPercent) * progress.max / 100
         progressTime.innerHTML = await window.utils.formatTimeRemaining(duration - passed, locale)
+        if (breakScreenMode === 'windowsUpdate' && !fakeUpdateUrls[fakeUpdateTheme]) {
+          const completedPercent = Math.min(99, Math.max(0, Math.floor(passedPercent)))
+          windowsUpdateTitle.innerHTML = await window.i18next.t('break.windowsUpdateTitle', { percent: completedPercent })
+        }
       }
     } else {
       progressTime.innerHTML = await window.utils.formatElapsedDuration(passed, locale)

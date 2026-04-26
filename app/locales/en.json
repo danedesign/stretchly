@@ -29,7 +29,9 @@
     "postpone": "Postpone this break",
     "skip": "Skip this break",
     "title": "Time to take a break!",
-    "finish": "Finish this break"
+    "finish": "Finish this break",
+    "windowsUpdateTitle": "Working on updates {{percent}}% complete.",
+    "windowsUpdateSubtitle": "Don't turn off your PC. This will take a while."
   },
   "preferences": {
     "title": "Stretchly Preferences",
@@ -46,6 +48,22 @@
       "window": "Window",
       "fullscreen": "Full screen",
       "showIdeas": "Show exercise tips during breaks",
+      "timeAwareRehabTips": "Use time-aware rehab plan tips",
+      "rehabIdeaGroups": "Time-aware rehab idea library (JSON):",
+      "rehabTableView": "Table view",
+      "rehabJsonView": "JSON view",
+      "undoRehabIdeaGroups": "Undo",
+      "redoRehabIdeaGroups": "Redo",
+      "saveRehabIdeaGroups": "Save library",
+      "resetRehabIdeaGroups": "Reset library",
+      "rehabIdeaGroupsSaved": "Saved",
+      "rehabIdeaGroupsInvalid": "Invalid JSON",
+      "rehabIdeaGroupsReset": "Reset",
+      "breakScreenMode": "Break screen style:",
+      "breakScreenClassic": "Classic Stretchly",
+      "breakScreenWindowsUpdate": "Windows Update",
+      "fakeUpdateTheme": "Windows Update theme:",
+      "fakeUpdateThemeLocal": "Built-in",
       "allScreens": "Shows breaks on all monitors",
       "monitorIdleTime": "Monitor system idle time (breaks are paused if system is idle).",
       "monitorDnd": "Show breaks even in Do Not Disturb mode",
@@ -338,7 +356,7 @@
       "text": "Stand up and put one foot on a nearby object, like a chair or step stool. Keep your knee bent and hold for 10-15 seconds. Repeat with the other foot."
     },
     "abo": {
-      "text": "Stand with your feet shoulder-width apart, lower your body down as if you were sitting back into a chair, then stand back up. Repeat several times."
+      "text": "Skip squats for now. If your back burns or ankle numbness gets worse, stop training and rest."
     },
     "abp": {
       "text": "Stand with your back and hands on a wall, then slowly move your arms up and down as if you were making snow angels."
@@ -369,6 +387,30 @@
     },
     "aby": {
       "text": "Sit on the edge of a chair or on the floor, and place the soles of your feet together, gently pressing down with your elbows to stretch your inner thighs."
+    },
+    "abz": {
+      "text": "Gently lift your chin and look upward. Move slowly and avoid large neck rotations."
+    },
+    "aca": {
+      "text": "Move your ankles gently: toes up, toes down, then small left-right motions. Keep it easy."
+    },
+    "acb": {
+      "text": "Stand against a wall with the back of your head, shoulder blades, and hips touching it. Lightly press the back of your head into the wall."
+    },
+    "acc": {
+      "text": "Use your fingertips to lightly rub around the area behind your ears. Keep the pressure as gentle as touching the skin."
+    },
+    "acd": {
+      "text": "Gently stretch one side of your neck for 20 seconds, then switch sides. Do not chase a strong stretch."
+    },
+    "ace": {
+      "text": "While seated, slowly circle each ankle 10 times clockwise and 10 times counter-clockwise."
+    },
+    "acf": {
+      "text": "Gently curl your toes into the floor 10 times to wake up the feet and ankles."
+    },
+    "acg": {
+      "text": "For your back, use light rubbing instead of tapping or pounding. Stay away from sensitive spots."
     }
   },
   "longBreakIdeas": {
@@ -515,6 +557,46 @@
     "abj": {
       "title": "Overwhelmed?",
       "text": "Try the 5-4-3-2-1 Grounding Technique: Identify 5 things you can see, 4 things you can touch, 3 things you can hear, 2 things you can smell, and 1 thing you can taste."
+    },
+    "abk": {
+      "title": "Neck wake-up",
+      "text": "Do a simplified McKenzie neck extension: gently lift your chin and look upward for a few minutes. Move slowly and avoid large rotations."
+    },
+    "abl": {
+      "title": "Wall posture",
+      "text": "Stand with the back of your head, shoulder blades, and hips against a wall. Lightly press the back of your head backward and repeat 30 times."
+    },
+    "abm": {
+      "title": "Behind-ear release",
+      "text": "Use your fingertips to lightly rub around the mastoid area behind your ears for a few minutes. Use skin-level pressure and avoid pressing on bony points."
+    },
+    "abn": {
+      "title": "Gentle neck stretch",
+      "text": "Use one hand to gently guide your head to the opposite side. Hold each side for 20 seconds and repeat twice. Do not chase a strong stretch."
+    },
+    "abo": {
+      "title": "Core stability",
+      "text": "If your body feels ready, do 3 sets of a 1-minute plank with 1 minute of rest between sets, then 10 push-ups or knee push-ups. Stop if symptoms increase."
+    },
+    "abp": {
+      "title": "Simple Baduanjin",
+      "text": "Slowly do only \"Two Hands Hold up the Heavens\" and \"Drawing the Bow\" from Baduanjin. Keep the movement calm and low effort."
+    },
+    "abq": {
+      "title": "Posterior-chain stretch",
+      "text": "Stand with knees slightly bent and gently reach your hands toward the floor. Do not force your hands to touch the floor. Repeat 30 times."
+    },
+    "abr": {
+      "title": "Ankle nerve glide",
+      "text": "Sit down and slowly circle each ankle 10 times clockwise and 10 times counter-clockwise, then curl your toes into the floor 10 times."
+    },
+    "abs": {
+      "title": "Safety signal",
+      "text": "If back burning or ankle numbness gets worse during training, stop immediately, lie down to rest, and skip training for the rest of the day."
+    },
+    "abt": {
+      "title": "Progress slowly",
+      "text": "Follow the current routine for one week first. If symptoms do not increase, progress gradually; do not rush the plank or push-up volume."
     }
   }
 }

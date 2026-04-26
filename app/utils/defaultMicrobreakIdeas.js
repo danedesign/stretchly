@@ -160,7 +160,7 @@ export default [
     enabled: true
   },
   {
-    data: 'Stand with your feet shoulder-width apart, lower your body down as if you were sitting back into a chair, then stand back up. Repeat several times.',
+    data: 'Skip squats for now. If your back burns or ankle numbness gets worse, stop training and rest.',
     enabled: true
   },
   {
@@ -201,6 +201,38 @@ export default [
   },
   {
     data: 'Sit on the edge of a chair or on the floor, and place the soles of your feet together, gently pressing down with your elbows to stretch your inner thighs.',
+    enabled: true
+  },
+  {
+    data: 'Gently lift your chin and look upward. Move slowly and avoid large neck rotations.',
+    enabled: true
+  },
+  {
+    data: 'Move your ankles gently: toes up, toes down, then small left-right motions. Keep it easy.',
+    enabled: true
+  },
+  {
+    data: 'Stand against a wall with the back of your head, shoulder blades, and hips touching it. Lightly press the back of your head into the wall.',
+    enabled: true
+  },
+  {
+    data: 'Use your fingertips to lightly rub around the area behind your ears. Keep the pressure as gentle as touching the skin.',
+    enabled: true
+  },
+  {
+    data: 'Gently stretch one side of your neck for 20 seconds, then switch sides. Do not chase a strong stretch.',
+    enabled: true
+  },
+  {
+    data: 'While seated, slowly circle each ankle 10 times clockwise and 10 times counter-clockwise.',
+    enabled: true
+  },
+  {
+    data: 'Gently curl your toes into the floor 10 times to wake up the feet and ankles.',
+    enabled: true
+  },
+  {
+    data: 'For your back, use light rubbing instead of tapping or pounding. Stay away from sensitive spots.',
     enabled: true
   }
 ]
