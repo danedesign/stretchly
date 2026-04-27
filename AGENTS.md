@@ -87,12 +87,65 @@ This fork customizes Stretchly into a time-aware rehab break app with optional f
 - `app/utils/defaultSettings.js`
   - Added default keys for the custom features.
 
+## Agent Documentation Practice
+
+- When discovering repo-specific setup, run, build, packaging, or troubleshooting details, add them to this file so future agents inherit the knowledge.
+- Prefer concrete commands and platform-specific notes over generic guidance.
+- Keep existing Windows and macOS instructions aligned when a workflow has equivalent commands on both platforms.
+- Whenever an agent changes files in this repo, include a concise suggested commit message in the final response.
+
 ## Rehab Plan Safety Notes
 
 - The source rehab plan says to stop squats for now.
 - The original default mini break squat-like idea was replaced with a safety warning.
 - Training should stop if back burning or ankle numbness worsens.
 - Progression should be gradual after one week without worsening symptoms.
+
+## Running Locally on macOS
+
+- The repo's `.nvmrc` currently specifies Node `24.15.0`.
+- If `npm` is not on `PATH`, install/load Node with `nvm` first:
+  ```bash
+  nvm install 24.15.0
+  nvm use 24.15.0
+  ```
+- If `nvm` itself is missing (`zsh: command not found: nvm`), either install Node directly from <https://nodejs.org/> or install `nvm` first. With Homebrew:
+  ```bash
+  brew install nvm
+  mkdir -p ~/.nvm
+  ```
+  Homebrew does not automatically load `nvm` into zsh. On Apple Silicon/Homebrew under `/opt/homebrew`, add these lines to `~/.zshrc`:
+  ```bash
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+  ```
+  On Intel/Homebrew under `/usr/local`, use `/usr/local/opt/nvm/...` in those paths instead.
+  Restart the terminal, or run `source ~/.zshrc`, then run the `nvm install` / `nvm use` commands above.
+- Useful commands:
+  ```bash
+  npm ci
+  npm start
+  npm run lint
+  npm test
+  ```
+
+## Building on macOS
+
+- Directory build / unpacked `.app`:
+  ```bash
+  npm run pack
+  ```
+- Distributable `.dmg` build:
+  ```bash
+  npm run dist
+  ```
+- `package.json` configures the macOS target as a DMG for both `x64` and `arm64`.
+- For a local unsigned/personal build, if code signing discovery blocks the build, try:
+  ```bash
+  CSC_IDENTITY_AUTO_DISCOVERY=false npm run dist
+  ```
+- Unlike Windows, do not use `npm.cmd` or `npx.cmd` on macOS; use `npm` and `npx` directly.
 
 ## Running Locally on Windows
 
@@ -137,4 +190,3 @@ This fork customizes Stretchly into a time-aware rehab break app with optional f
 - At the time these notes were added, `git status --short` showed modified:
   - `app/preferences-renderer.js`
   - `app/utils/timedRehabIdeas.js`
-
