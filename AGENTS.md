@@ -146,6 +146,7 @@ This fork customizes Stretchly into a time-aware rehab break app with optional f
   CSC_IDENTITY_AUTO_DISCOVERY=false npm run dist
   ```
 - Unlike Windows, do not use `npm.cmd` or `npx.cmd` on macOS; use `npm` and `npx` directly.
+- If `electron-builder` fails with `Application at path could not be found`, confirm the command was run from the repo root after `npm ci`, then capture the full command and the build log lines above the error. The usual first checks are that `node_modules` exists, `npm run pack` can create the unpacked `.app`, and the expected output appears under `dist/`.
 
 ## Running Locally on Windows
 
@@ -190,3 +191,4 @@ This fork customizes Stretchly into a time-aware rehab break app with optional f
 - At the time these notes were added, `git status --short` showed modified:
   - `app/preferences-renderer.js`
   - `app/utils/timedRehabIdeas.js`
+- If committing on macOS fails with `.husky/pre-commit: line 1: npm: command not found`, Git is running the Husky hook without `npm` on `PATH`. Keep SourceTree workflows working by making the hook load the repo's `.nvmrc` Node path and common Homebrew paths before calling `npm run lint`; do not require the user to switch to Terminal commits as the primary fix.
