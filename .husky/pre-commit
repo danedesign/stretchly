@@ -1,1 +1,14 @@
+node_version="$(cat .nvmrc 2>/dev/null || true)"
+
+if [ -n "$node_version" ]; then
+  export PATH="$HOME/.nvm/versions/node/v$node_version/bin:$PATH"
+fi
+
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+
+if ! command -v npm >/dev/null 2>&1; then
+  echo "npm was not found on PATH. Install/load Node.js, then retry commit."
+  exit 127
+fi
+
 npm run lint
